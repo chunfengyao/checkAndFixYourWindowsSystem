@@ -1,52 +1,60 @@
 @echo off
-title ÏµÍ³ÍêÕûÐÔÐ£Ñé
+title ç³»ç»Ÿå®Œæ•´æ€§æ ¡éªŒ
 color F0
 
 ::BatchGotAdmin
 :-----------------------------------------------------------------
-REM --> ¼ì²éÈ¨ÏÞ 
+REM --> æ£€æŸ¥æƒé™ 
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system" 
-REM --> Èç¹û³öÏÖÁË´íÎó£¬ÔòÄ¿Ç°µÄÅú´¦ÀíÎ´ÒÔ¹ÜÀíÔ±È¨ÏÞÔËÐÐ¡£ 
-if '%errorlevel%' NEQ '0' ( 
-    goto UACPrompt 
-) else ( goto gotAdmin )
+REM --> å¦‚æžœå‡ºçŽ°äº†é”™è¯¯ï¼Œåˆ™ç›®å‰çš„æ‰¹å¤„ç†æœªä»¥ç®¡ç†å‘˜æƒé™è¿è¡Œã€‚ 
+if '%errorlevel%' equ '5' (
+    goto  UACPrompt
+) else if '%errorlevel%' equ '0' (
+goto gotAdmin
+) else (
+	echo Sorryé¢ï¼Œè„šæœ¬èŽ·å–ç®¡ç†å‘˜æƒé™å¤±è´¥äº†ã€‚æ‚¨å¯ä»¥å°è¯•ï¼šå³å‡»è¯¥è„šæœ¬--é€‰æ‹©ï¼šä»¥ç®¡ç†å‘˜èº«ä»½è¿è¡Œã€‚
+	pause>nul
+	exit
+)
 
 :UACPrompt
-echo µã»÷¡°ÊÇ¡±£¬ÒÔÊ¹µÃ¸Ã½Å±¾¿ÉÒÔÒÔ¹ÜÀíÔ±Éí·ÝÔËÐÐ
+echo ç‚¹å‡»â€œæ˜¯â€ï¼Œä»¥ä½¿å¾—è¯¥è„šæœ¬å¯ä»¥ä»¥ç®¡ç†å‘˜èº«ä»½è¿è¡Œ
 > "%temp%\getadmin.vbs" echo Set UAC = CreateObject^("Shell.Application"^)
 >> "%temp%\getadmin.vbs" echo UAC.ShellExecute "%~s0", "%*", "", "runas", 1
 %temp%\getadmin.vbs
 exit /B
 
 :gotAdmin
-REM -->½¨ÒéÔÚ¼ì²âµ½È¨ÏÞÖ®ºóÉ¾³ýÁÙÊ±ÎÄ¼þ£¨ÏÂÒ»Ìõ×¢ÊÍ¾ÍÊÇÓÃÀ´É¾³ýµÄ£©
+REM -->å»ºè®®åœ¨æ£€æµ‹åˆ°æƒé™ä¹‹åŽåˆ é™¤ä¸´æ—¶æ–‡ä»¶ï¼ˆä¸‹ä¸€æ¡æ³¨é‡Šå°±æ˜¯ç”¨æ¥åˆ é™¤çš„ï¼‰
 REM -->if exist "%temp%\getadmin.vbs"(del "%temp%\getadmin.vbs")
 
 :-----------------------------------------------------------------
 
-REM -->ÉèÖÃÒ»Ð©¹Ì¶¨µÄ×Ö·û´®ºÍÊý¾Ý
+:Prepare
+REM -->è®¾ç½®ä¸€äº›å›ºå®šçš„å­—ç¬¦ä¸²å’Œæ•°æ®
 set vbs_arg=262208
-set tips1=ÏµÍ³ÎÄ¼þ
-set tips2=ÒÑÍê³É£¡£¡£¡Çë²é¿´ÏµÍ³ÎÄ¼þÐ£Ñé½á¹û¡£
+set tips1=ç³»ç»Ÿæ–‡ä»¶
+set tips2=å·²å®Œæˆï¼ï¼ï¼è¯·æŸ¥çœ‹ç³»ç»Ÿæ–‡ä»¶æ ¡éªŒç»“æžœã€‚
 
-set echo1=############ÕýÔÚ
-set echo2=ÏµÍ³ÎÄ¼þËð»µ¡£¡£¡£¡£¡£¡£###############
+set echo1=############æ­£åœ¨
+set echo2=ç³»ç»Ÿæ–‡ä»¶æŸåã€‚ã€‚ã€‚ã€‚ã€‚ã€‚###############
 
-set act1=Ð£Ñé
-set act2=Ð£ÑéÓëÐÞ¸´
-set act3=Ç¿Á¦%act1%
-set act4=Ç¿Á¦%act2%
+set act1=æ ¡éªŒ
+set act2=æ ¡éªŒä¸Žä¿®å¤
+set act3=å¼ºåŠ›%act1%
+set act4=å¼ºåŠ›%act2%
 
-set title_end=Íê³ÉÌáÊ¾
+set title_end=å®Œæˆæç¤º
+goto menu
 
 :menu
 cls
-echo ÇëÑ¡Ôñ£º
-echo ÊäÈë1²¢»Ø³µÎª½öÖ´ÐÐÉ¨Ãè¡£
-echo ÊäÈë2²¢»Ø³µÎªÖ´ÐÐÉ¨Ãè²¢ÐÞ¸´±»ÐÞ¸ÄµÄÏµÍ³ÎÄ¼þ¡£
-echo ÊäÈë3²¢»Ø³µÎª½öÖ´ÐÐÇ¿Á¦É¨Ãè(Ä¬ÈÏÑ¡Ïî)¡£
-echo ÊäÈë4²¢»Ø³µÎªÖ´ÐÐÇ¿Á¦É¨Ãè²¢Ç¿Á¦ÐÞ¸´Ëð»µµÄÏµÍ³ÎÄ¼þ¡£
-echo ÊäÈëÆäËüÈÎÒâÖµ²¢»Ø³µ»òÕß¹Ø±Õ´°¿ÚÎªÍË³ö¡£
+echo è¯·é€‰æ‹©ï¼š
+echo è¾“å…¥1å¹¶å›žè½¦ä¸ºä»…æ‰§è¡Œæ‰«æã€‚
+echo è¾“å…¥2å¹¶å›žè½¦ä¸ºæ‰§è¡Œæ‰«æå¹¶ä¿®å¤è¢«ä¿®æ”¹çš„ç³»ç»Ÿæ–‡ä»¶ã€‚
+echo è¾“å…¥3å¹¶å›žè½¦ä¸ºä»…æ‰§è¡Œå¼ºåŠ›æ‰«æ(é»˜è®¤é€‰é¡¹)ã€‚
+echo è¾“å…¥4å¹¶å›žè½¦ä¸ºæ‰§è¡Œå¼ºåŠ›æ‰«æå¹¶å¼ºåŠ›ä¿®å¤æŸåçš„ç³»ç»Ÿæ–‡ä»¶(ä»…æ”¯æŒWindows 8ã€Windows Server 2012 åŠä»¥ä¸Šç‰ˆæœ¬çš„æ“ä½œç³»ç»Ÿ)ã€‚
+echo è¾“å…¥å…¶å®ƒä»»æ„å€¼å¹¶å›žè½¦æˆ–è€…å…³é—­çª—å£ä¸ºé€€å‡ºã€‚
 set /a choose=3
 set /p choose=
 if %choose%==1 (
@@ -64,7 +72,7 @@ goto powerful_fix
 cls
 echo "%echo1%%act1%%echo2%"
 sfc /verifyonly & mshta vbscript:msgbox("%tips1% %act1% %tips2%",%vbs_arg%,"%tips1% %act1% %title_end%")(window.close)
-echo °´ÈÎÒâ¼ü·µ»Ø²Ëµ¥
+echo æŒ‰ä»»æ„é”®è¿”å›žèœå•
 pause>nul
 goto menu
 
@@ -72,21 +80,23 @@ goto menu
 cls
 echo "%echo1%%act2%%echo2%"
 sfc /scannow & mshta vbscript:msgbox("%tips1%%act2%%tips2%",%vbs_arg%,"%tips1%%act2%%title_end%")(window.close)
-echo °´ÈÎÒâ¼üÍË³ö
+echo æŒ‰ä»»æ„é”®é€€å‡º
 pause>nul
+exit
 
 :powerful_verify_only
 cls
 echo "%echo1%%act3%%echo2%"
 dism /online /cleanup-image /ScanHealth & mshta vbscript:msgbox("%tips1%%act3%%tips2%",%vbs_arg%,"%tips1%%act3%%title_end%")(window.close)
-echo °´ÈÎÒâ¼ü·µ»Ø²Ëµ¥
+echo æŒ‰ä»»æ„é”®è¿”å›žèœå•
 pause>nul
 goto menu
 
 :powerful_fix
 cls
 echo "%echo1%%act4%%echo2%"
-dism /online /cleanup-image  /RestoreHealth & mshta vbscript:msgbox("%tips1%%act4%%tips2%",%vbs_arg%,"%tips1%%act4%%title_end%")(window.close)
-echo °´ÈÎÒâ¼üÍË³ö
+dism /online /cleanup-image /RestoreHealth & mshta vbscript:msgbox("%tips1%%act4%%tips2%",%vbs_arg%,"%tips1%%act4%%title_end%")(window.close)
+echo æŒ‰ä»»æ„é”®é€€å‡º
 pause>nul
+exit
 
