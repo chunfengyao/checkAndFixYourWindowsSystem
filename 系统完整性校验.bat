@@ -26,7 +26,7 @@ exit /B
 
 :gotAdmin
 REM -->建议在检测到权限之后删除临时文件（下一条注释就是用来删除的）
-REM -->if exist "%temp%\getadmin.vbs"(del "%temp%\getadmin.vbs")
+if exist "%temp%\getadmin.vbs"(del "%temp%\getadmin.vbs")
 
 :-----------------------------------------------------------------
 
@@ -99,4 +99,3 @@ dism /online /cleanup-image /RestoreHealth & mshta vbscript:msgbox("%tips1%%act4
 echo 按任意键退出
 pause>nul
 exit
-
