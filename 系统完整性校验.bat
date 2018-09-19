@@ -3,16 +3,24 @@ title 系统完整性校验
 color F0
 
 ::BatchGotAdmin
-:-----------------------------------------------------------------
-REM --> 检查权限 
->nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system" 
-REM --> 如果出现了错误，则目前的批处理未以管理员权限运行。 
+:--------------------------------------
+REM --> 检查权限
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+REM --> 如果出现了拒绝访问（错误代码：5），则目前的批处理未以管理员权限运行。
 if '%errorlevel%' equ '5' (
     goto  UACPrompt
 ) else if '%errorlevel%' equ '0' (
 goto gotAdmin
 ) else (
-	echo Sorry额，脚本获取管理员权限失败了。您可以尝试：右击该脚本--选择：以管理员身份运行。
+	@echo off
+	echo Sorry额，脚本自动获取管理员权限失败了。
+	echo 当然，您可以尝试：右击该脚本--选择：以管理员身份运行。
+	echo 以下是错误信息：
+	"%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+	echo+
+	echo 以下是错误码：
+	echo %errorlevel%
+	echo+
 	pause>nul
 	exit
 )
@@ -25,10 +33,9 @@ echo 点击“是”，以使得该脚本可以以管理员身份运行
 exit /B
 
 :gotAdmin
-REM -->建议在检测到权限之后删除临时文件（下一条注释就是用来删除的）
-if exist "%temp%\getadmin.vbs"(del "%temp%\getadmin.vbs")
-
-:-----------------------------------------------------------------
+REM -->建议在检测到权限之后删除临时文件
+REM -->if exist "%temp%\getadmin.vbs"(del "%temp%\getadmin.vbs")
+:--------------------------------------
 
 :Prepare
 REM -->设置一些固定的字符串和数据
@@ -66,7 +73,6 @@ goto powerful_verify_only
 ) else if %choose%==4 (
 goto powerful_fix
 ) else exit
-
 
 :verifyonly
 cls
