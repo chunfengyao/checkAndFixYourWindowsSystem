@@ -4,9 +4,9 @@ color F0
 
 ::BatchGotAdmin
 :--------------------------------------
-REM --> 检查权限
+REM --> 设置邮箱地址
+set mailAddr=testmailaddr@test.com
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
-REM --> 如果出现了拒绝访问（错误代码：5），则目前的批处理未以管理员权限运行。
 if '%errorlevel%' equ '5' (
     goto  UACPrompt
 ) else if '%errorlevel%' equ '0' (
@@ -14,16 +14,32 @@ goto gotAdmin
 ) else (
 	@echo off
 	echo Sorry额，脚本自动获取管理员权限失败了。
+	>nul choice /t 1 /d y
 	echo 当然，您可以尝试：右击该脚本--选择：以管理员身份运行。
+	>nul choice /t 1 /d y
 	echo 以下是错误信息：
 	"%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+	call set level=%%errorlevel%%
 	echo+
 	echo 以下是错误码：
-	echo %errorlevel%
+	call echo %%level%%
 	echo+
-	pause>nul
-	exit
+	echo+
 )
+>nul choice /t 1 /d y
+echo 您可以输入2并回车，截图该页面或者复制该页面的内容，并发送至邮箱：%mailAddr%。
+echo 输入1并回车，将为您打开邮件发送页面。
+echo 或者，直接回车、关闭窗口、输入任何其它值并回车以退出。
+set /a tipsChoose=2
+set /p tipsChoose=
+if %tipsChoose%==1 (
+	start mailto:"%mailAddr%?subject=系统完整性校验-调试信息求助&body=错误码：%level%"
+	>nul choice /t 2 /d y
+	echo 已帮您打开邮件发送页面，如果未打开。您可以手动发送邮件至：%mailAddr%，谢谢。
+	>nul pause
+	exit
+) else exit
+
 
 :UACPrompt
 echo 点击“是”，以使得该脚本可以以管理员身份运行
@@ -33,7 +49,7 @@ echo 点击“是”，以使得该脚本可以以管理员身份运行
 exit /B
 
 :gotAdmin
-REM -->建议在检测到权限之后删除临时文件
+REM -->建议在检测到权限之后删除临时文件（此处为了降低磁盘IO，暂时不进行临时文件的删除）
 REM -->if exist "%temp%\getadmin.vbs"(del "%temp%\getadmin.vbs")
 :--------------------------------------
 
@@ -62,6 +78,8 @@ echo 输入2并回车为执行扫描并修复被修改的系统文件。
 echo 输入3并回车为仅执行强力扫描(默认选项)。
 echo 输入4并回车为执行强力扫描并强力修复损坏的系统文件(仅支持Windows 8、Windows Server 2012 及以上版本的操作系统)。
 echo 输入其它任意值并回车或者关闭窗口为退出。
+echo+
+echo 直接回车默认运行选项 3（默认选项）
 set /a choose=3
 set /p choose=
 if %choose%==1 (
